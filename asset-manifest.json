@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/filab_plots/static/css/main.57089926.css",
-    "main.js": "/filab_plots/static/js/main.428b57df.js",
+    "main.css": "/filab_plots/static/css/main.452c0c6f.css",
+    "main.js": "/filab_plots/static/js/main.8b5e43ab.js",
     "static/js/453.ed6751fe.chunk.js": "/filab_plots/static/js/453.ed6751fe.chunk.js",
     "index.html": "/filab_plots/index.html",
-    "main.57089926.css.map": "/filab_plots/static/css/main.57089926.css.map",
-    "main.428b57df.js.map": "/filab_plots/static/js/main.428b57df.js.map",
+    "main.452c0c6f.css.map": "/filab_plots/static/css/main.452c0c6f.css.map",
+    "main.8b5e43ab.js.map": "/filab_plots/static/js/main.8b5e43ab.js.map",
     "453.ed6751fe.chunk.js.map": "/filab_plots/static/js/453.ed6751fe.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.57089926.css",
-    "static/js/main.428b57df.js"
+    "static/css/main.452c0c6f.css",
+    "static/js/main.8b5e43ab.js"
   ]
 }
