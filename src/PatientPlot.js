@@ -8,6 +8,12 @@ function PatientPlot({ patient }) {
   const dx = patient.dx_annotations ?? [];
   const deathDate = patient.death?.date ?? null;
 
+  const lastDischarge =
+    patient.last_discharge && !patient.last_discharge.death_from_dad
+      ? patient.last_discharge
+      : null;
+
+
   return (
     <Plot
       data={[
@@ -15,16 +21,18 @@ function PatientPlot({ patient }) {
         {
           x: fi.dates,
           y: fi.acute,
-          mode: "markers",
+          mode: "lines+markers",
           name: "FI Lab Acute",
-          marker: { size: 6 }
+          marker: { size: 1 },
+          line: { width: 2 }
         },
 
         // FI Chronic
         {
           x: fi.dates,
           y: fi.chronic,
-          mode: "lines",
+          mode: "markers+lines",
+          connectgaps: true,
           name: "FI Lab Chronic",
           line: { width: 3 }
         },
@@ -79,7 +87,23 @@ function PatientPlot({ patient }) {
             line: { width: 0 }
           })),
 
-          // ☠ Death
+          // 🟢 Last discharge (NON-death only)
+          lastDischarge && {
+            type: "line",
+            xref: "x",
+            yref: "paper",
+            x0: lastDischarge.date,
+            x1: lastDischarge.date,
+            y0: 0,
+            y1: 1,
+            line: {
+              color: "black",
+              dash: "dot",
+              width: 2
+            }
+          },
+
+          // ☠ Death (unchanged)
           deathDate && {
             type: "line",
             x0: deathDate,
@@ -96,7 +120,33 @@ function PatientPlot({ patient }) {
         ].filter(Boolean),
 
         annotations: [
-          // ☠ Death label
+          {
+            x: 0,
+            y: 1.14,
+            xref: "paper",
+            yref: "paper",
+            text: `Age: ${patient.age}  •  Sex: ${patient.sex}`,
+            showarrow: false,
+            align: "left",
+            font: {
+              size: 20,
+              color: "#222"
+            }
+          },
+
+          lastDischarge && {
+            x: lastDischarge.date,
+            y: 1,
+            yref: "paper",
+            text: `Last Discharge: ${lastDischarge.disposition}`,
+            showarrow: false,
+            font: { color: "black", size: 11 },
+            bgcolor: "rgba(255,255,255,0.85)",
+            bordercolor: "black",
+            borderwidth: 1,
+            yanchor: "bottom"
+          },
+
           deathDate && {
             x: deathDate,
             y: 1,
@@ -107,6 +157,23 @@ function PatientPlot({ patient }) {
             yanchor: "bottom"
           }
         ].filter(Boolean)
+
+      }}
+      config={{
+        scrollZoom: false,
+        modeBarButtonsToRemove: [
+          "zoom2d",
+          "zoomIn2d",
+          "zoomOut2d",
+          "pan2d",
+          "select2d",
+          "lasso2d",
+          "autoScale2d",
+          "resetScale2d"
+        ],
+        displaylogo: false,
+        displayModeBar: true,
+        staticPlot: false
       }}
       style={{ width: "100%" }}
     />
