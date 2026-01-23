@@ -69,6 +69,7 @@ body {
   padding: 20px;
   overflow-y: auto;
   background-color: #f5f7fa;
+  min-width: 0;
 }
 
 /* ---------- EMPTY STATE ---------- */
