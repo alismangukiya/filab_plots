@@ -50,29 +50,39 @@ function PatientPlot({ patient }) {
     >
       {size.width > 0 && (
         <Plot
-          key={size.width}   // 👈 forces Plotly resize
+          key={size.width}   // force resize
           data={[
-            // FI Acute
+            // ---------------- FI ACUTE ----------------
             {
               x: fi.dates,
               y: fi.acute,
               mode: "lines+markers",
               name: "FI Lab Acute",
               marker: { size: 2 },
-              line: { width: 2 }
+              line: { width: 2 },
+
+              // 👇 SHOW TEST COUNT
+              text: fi.num_of_tests,
+              hovertemplate:
+                "FI Acute: %{y:.3f}<br>" +
+                "# of Unique tests: %{text}<extra></extra>"
             },
 
-            // FI Chronic
+            // ---------------- FI CHRONIC ----------------
             {
               x: fi.dates,
               y: fi.chronic,
               mode: "lines+markers",
               connectgaps: true,
               name: "FI Lab Chronic",
-              line: { width: 3 }
+              line: { width: 3 },
+              text: fi.num_of_tests,
+              hovertemplate:
+                "FI Chronic: %{y:.3f}<br>" +
+                "# of Unique tests: %{text}<extra></extra>"
             },
 
-            // Diagnosis markers
+            // ---------------- DX MARKERS ----------------
             {
               x: dx.map(d => d.date),
               y: dx.map(() => 0.02),
@@ -83,18 +93,22 @@ function PatientPlot({ patient }) {
                 size: 10,
                 color: "purple"
               },
-              hovertemplate: "%{x}<br>%{text}<extra></extra>",
-              text: dx.map(d => d.text)
+              text: dx.map(d => d.text),
+              hovertemplate: "%{x}<br>%{text}<extra></extra>"
             }
           ]}
           layout={{
             autosize: true,
             title: `FI-Lab Timeline — HCN ${patient.hcn}`,
-            yaxis: { range: [0, 1] },
             hovermode: "x unified",
 
+            yaxis: {
+              title: "Frailty Index",
+              range: [0, 1]
+            },
+
             shapes: [
-              // Inpatient
+              // Inpatient stays
               ...inpatient.map(v => ({
                 type: "rect",
                 xref: "x",
@@ -108,7 +122,7 @@ function PatientPlot({ patient }) {
                 line: { width: 0 }
               })),
 
-              // ED
+              // ED visits
               ...ed.map(v => ({
                 type: "rect",
                 xref: "x",
