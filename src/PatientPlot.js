@@ -95,7 +95,40 @@ function PatientPlot({ patient }) {
               },
               text: dx.map(d => d.text),
               hovertemplate: "%{x}<br>%{text}<extra></extra>"
-            }
+            },
+
+            // ---------------- LEGEND: INPATIENT ----------------
+            {
+              x: [null],
+              y: [null],
+              mode: "markers",
+              name: "Inpatient Stay",
+              marker: {
+                size: 12,
+                color: "salmon",
+                opacity: 0.4,
+                symbol: "square"
+              },
+              showlegend: true,
+              hoverinfo: "skip"
+            },
+
+            // ---------------- LEGEND: ED ----------------
+            {
+              x: [null],
+              y: [null],
+              mode: "markers",
+              name: "Emergency Visit",
+              marker: {
+                size: 12,
+                color: "skyblue",
+                opacity: 0.5,
+                symbol: "square"
+              },
+              showlegend: true,
+              hoverinfo: "skip"
+            },
+
           ]}
           layout={{
             autosize: true,
