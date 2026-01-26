@@ -34,10 +34,6 @@ function PatientPlot({ patient }) {
   const dx = patient.dx_annotations ?? [];
   const deathDate = patient.death?.date ?? null;
 
-  const lastDischarge =
-    patient.last_discharge && !patient.last_discharge.death_from_dad
-      ? patient.last_discharge
-      : null;
 
   return (
     <div
@@ -56,11 +52,9 @@ function PatientPlot({ patient }) {
             {
               x: fi.dates,
               y: fi.acute,
-              mode: "lines+markers",
+              mode: "markers",
               name: "FI Lab Acute",
-              marker: { size: 2 },
-              line: { width: 2 },
-
+              marker: { size: 5 },
               // 👇 SHOW TEST COUNT
               text: fi.num_of_tests,
               hovertemplate:
@@ -84,18 +78,42 @@ function PatientPlot({ patient }) {
 
             // ---------------- DX MARKERS ----------------
             {
-              x: dx.map(d => d.date),
-              y: dx.map(() => 0.02),
+              x: inpatient.map(v => v.start),
+              y: inpatient.map(() => 0.005),
               mode: "markers",
-              name: "Diagnosis",
+              name: "Diagnosis (MRDx)",
               marker: {
                 symbol: "triangle-up",
                 size: 10,
                 color: "purple"
               },
               text: dx.map(d => d.text),
-              hovertemplate: "%{x}<br>%{text}<extra></extra>"
+              hovertemplate:
+                "Date: %{x|%Y-%m-%d}<br>" +
+                "%{text}<extra></extra>"
+
             },
+
+            // ---------------- DISCHARGE DISPOSITION (HOVER ONLY) ----------------
+            {
+              x: inpatient.map(v => v.end),
+              y: inpatient.map(() => 0.005),   // same baseline as DX
+              mode: "markers",
+              name: "Discharge",
+              marker: {
+                size: 5,
+                symbol: "x",
+                color: "red" // invisible
+              },
+              text: inpatient.map(
+                v => `Discharge: ${v.discharge_disposition ?? "Unknown"}`
+              ),
+              hovertemplate:
+                "Date: %{x|%Y-%m-%d}<br>" +
+                "%{text}<extra></extra>",
+              showlegend: true
+            },
+
 
             // ---------------- LEGEND: INPATIENT ----------------
             {
@@ -137,7 +155,14 @@ function PatientPlot({ patient }) {
 
             yaxis: {
               title: "Frailty Index",
-              range: [0, 1]
+              range: [0, 0.8],
+              fixedrange: true,
+              dtick: 0.2,
+              tick0: 0
+            },
+
+            xaxis: {
+              fixedrange: false
             },
 
             shapes: [
@@ -169,22 +194,6 @@ function PatientPlot({ patient }) {
                 line: { width: 0 }
               })),
 
-              // Last discharge (non-death)
-              lastDischarge && {
-                type: "line",
-                xref: "x",
-                yref: "paper",
-                x0: lastDischarge.date,
-                x1: lastDischarge.date,
-                y0: 0,
-                y1: 1,
-                line: {
-                  color: "black",
-                  dash: "dot",
-                  width: 2
-                }
-              },
-
               // Death
               deathDate && {
                 type: "line",
@@ -214,19 +223,6 @@ function PatientPlot({ patient }) {
                 font: { size: 18, color: "#222" }
               },
 
-              lastDischarge && {
-                x: lastDischarge.date,
-                y: 1,
-                yref: "paper",
-                text: `Last Discharge: ${lastDischarge.disposition}`,
-                showarrow: false,
-                font: { size: 11, color: "black" },
-                bgcolor: "rgba(255,255,255,0.9)",
-                bordercolor: "black",
-                borderwidth: 1,
-                yanchor: "bottom"
-              },
-
               deathDate && {
                 x: deathDate,
                 y: 1,
@@ -241,7 +237,27 @@ function PatientPlot({ patient }) {
           config={{
             responsive: true,
             displaylogo: false,
-            scrollZoom: false,
+            scrollZoom: true, modeBarButtonsToAdd: [
+              {
+                name: "↺ Reset",
+                title: "Reset axes",
+                icon: {
+                  width: 16,
+                  height: 16,
+                  path: `
+                      M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z
+                      M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384
+                      L8.41 4.658A.25.25 0 0 1 8 4.466
+                  `,
+                },
+                click: (gd) => {
+                  window.Plotly.relayout(gd, {
+                    "xaxis.autorange": true,
+                    "yaxis.range": [0, 0.8]
+                  });
+                }
+              }
+            ],
             modeBarButtonsToRemove: [
               "zoom2d",
               "zoomIn2d",
@@ -250,6 +266,7 @@ function PatientPlot({ patient }) {
               "select2d",
               "lasso2d",
               "autoScale2d",
+              "toImage",
               "resetScale2d"
             ]
           }}

@@ -92,3 +92,9 @@ body {
 .plot-card .js-plotly-plot {
   border-radius: 8px;
 }
+
+/* Increase size of all modebar buttons */
+.modebar-btn {
+  transform: scale(2);
+  /* padding: 10 px !important; */
+}
