@@ -1,4 +1,5 @@
 import Plot from "react-plotly.js";
+
 import { useEffect, useRef, useState } from "react";
 
 /**
@@ -259,7 +260,7 @@ function PatientPlot({ patient }) {
               "lasso2d",
               "autoScale2d",
               "toImage",
-              "resetScale2d"
+              // "resetScale2d"
             ]
           }}
           onHover={(e) => {
