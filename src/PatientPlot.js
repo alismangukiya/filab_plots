@@ -1,5 +1,4 @@
 import Plot from "react-plotly.js";
-
 import { useEffect, useRef, useState } from "react";
 
 /**
@@ -36,20 +35,40 @@ function PatientPlot({ patient }) {
   const dx = patient.dx_annotations ?? [];
   const deathDate = patient.death?.date ?? null;
 
+  // ================= X-AXIS RANGE (CORRECT) =================
+  const MIN_START_DATE = new Date("2020-01-01");
+
+  const allDates = [
+    ...(fi?.dates ?? []),
+    ...inpatient.flatMap(v => [v.start, v.end]),
+    ...ed.flatMap(v => [v.start, v.end]),
+    ...(deathDate ? [deathDate] : [])
+  ].filter(Boolean);
+
+  const actualMinDate = new Date(
+    Math.min(...allDates.map(d => new Date(d)))
+  );
+
+  const actualMaxDate = new Date(
+    Math.max(...allDates.map(d => new Date(d)))
+  );
+
+  const xAxisStart =
+    actualMinDate < MIN_START_DATE ? actualMinDate : MIN_START_DATE;
+
+  const xAxisEnd = actualMaxDate;
+  // ==========================================================
+
   return (
     <div
       ref={containerRef}
-      style={{
-        width: "100%",
-        height: "100%",
-        minHeight: "480px"
-      }}
+      style={{ width: "100%", height: "100%", minHeight: "480px" }}
     >
       {size.width > 0 && (
         <Plot
           key={size.width}
           data={[
-            // ---------------- FI ACUTE ----------------
+            // ---------- FI ACUTE ----------
             {
               x: fi.dates,
               y: fi.acute,
@@ -62,7 +81,7 @@ function PatientPlot({ patient }) {
                 "# of Unique tests: %{text}<extra></extra>"
             },
 
-            // ---------------- FI CHRONIC ----------------
+            // ---------- FI CHRONIC ----------
             {
               x: fi.dates,
               y: fi.chronic,
@@ -77,7 +96,7 @@ function PatientPlot({ patient }) {
                 "# of Unique tests: %{text}<extra></extra>"
             },
 
-            // ---------------- DX MARKERS ----------------
+            // ---------- DX MARKERS ----------
             {
               x: inpatient.map(v => v.start),
               y: inpatient.map(() => 0.005),
@@ -94,7 +113,7 @@ function PatientPlot({ patient }) {
                 "%{text}<extra></extra>"
             },
 
-            // ---------------- DISCHARGE (HOVER ONLY) ----------------
+            // ---------- DISCHARGE ----------
             {
               x: inpatient.map(v => v.end),
               y: inpatient.map(() => 0.005),
@@ -110,11 +129,10 @@ function PatientPlot({ patient }) {
               ),
               hovertemplate:
                 "Date: %{x|%Y-%m-%d}<br>" +
-                "%{text}<extra></extra>",
-              showlegend: true
+                "%{text}<extra></extra>"
             },
 
-            // ---------------- LEGEND: INPATIENT ----------------
+            // ---------- LEGEND: INPATIENT ----------
             {
               x: [null],
               y: [null],
@@ -129,7 +147,7 @@ function PatientPlot({ patient }) {
               hoverinfo: "skip"
             },
 
-            // ---------------- LEGEND: ED ----------------
+            // ---------- LEGEND: ED ----------
             {
               x: [null],
               y: [null],
@@ -148,8 +166,8 @@ function PatientPlot({ patient }) {
             autosize: true,
             title: `FI-Lab Timeline — HCN ${patient.hcn}`,
             hovermode: "x unified",
-            hoverdistance: 5,
-            spikedistance: 5,
+            hoverdistance: 2,
+            spikedistance: 2,
 
             yaxis: {
               title: "Frailty Index",
@@ -159,11 +177,15 @@ function PatientPlot({ patient }) {
             },
 
             xaxis: {
-              fixedrange: true
+              fixedrange: true,
+              range: [
+                xAxisStart.toISOString().slice(0, 10),
+                xAxisEnd.toISOString().slice(0, 10)
+              ]
             },
 
             shapes: [
-              // 🔶 1-YEAR CHRONIC LOOKBACK (HOVER)
+              // ----- 1-YEAR LOOKBACK -----
               highlightWindow && {
                 type: "rect",
                 xref: "x",
@@ -172,7 +194,7 @@ function PatientPlot({ patient }) {
                 x1: highlightWindow.x1,
                 y0: 0,
                 y1: 1,
-                fillcolor: "rgba(0,0,0,0.15)",
+                fillcolor: "rgba(255, 166, 0, 0.15)",
                 line: {
                   width: 2,
                   dash: "dot",
@@ -180,7 +202,7 @@ function PatientPlot({ patient }) {
                 }
               },
 
-              // Inpatient stays
+              // ----- INPATIENT STAYS -----
               ...inpatient.map(v => ({
                 type: "rect",
                 xref: "x",
@@ -194,7 +216,7 @@ function PatientPlot({ patient }) {
                 line: { width: 0 }
               })),
 
-              // ED visits
+              // ----- ED VISITS -----
               ...ed.map(v => ({
                 type: "rect",
                 xref: "x",
@@ -208,7 +230,7 @@ function PatientPlot({ patient }) {
                 line: { width: 0 }
               })),
 
-              // Death
+              // ----- DEATH -----
               deathDate && {
                 type: "line",
                 xref: "x",
@@ -239,12 +261,12 @@ function PatientPlot({ patient }) {
 
               highlightWindow && {
                 x: highlightWindow.x1,
-                y: 0.85,
+                y: 0.9,
                 xref: "x",
                 yref: "paper",
                 text: "1-year lookback (FI Lab Chronic)",
                 showarrow: false,
-                font: { size: 11, color: "#444", weight: "bold" },
+                font: { size: 11.5, color: "#444", weight: "bold" },
                 xanchor: "right"
               }
             ].filter(Boolean)
@@ -261,8 +283,7 @@ function PatientPlot({ patient }) {
               "select2d",
               "lasso2d",
               "autoScale2d",
-              "toImage",
-              // "resetScale2d"
+              "toImage"
             ]
           }}
           onHover={(e) => {
