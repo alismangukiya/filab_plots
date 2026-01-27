@@ -157,7 +157,7 @@ function PatientPlot({ patient }) {
             },
 
             xaxis: {
-              fixedrange: false
+              fixedrange: true
             },
 
             shapes: [
