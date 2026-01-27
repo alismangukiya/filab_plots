@@ -148,6 +148,8 @@ function PatientPlot({ patient }) {
             autosize: true,
             title: `FI-Lab Timeline — HCN ${patient.hcn}`,
             hovermode: "x unified",
+            hoverdistance: 5,
+            spikedistance: 5,
 
             yaxis: {
               title: "Frailty Index",
