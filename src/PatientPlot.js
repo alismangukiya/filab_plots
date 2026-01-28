@@ -28,20 +28,27 @@ function PatientPlot({ patient }) {
   const [containerRef, size] = useResizeObserver();
   const [highlightWindow, setHighlightWindow] = useState(null);
 
-  const fi = patient.fi_lab;
+  const fi = patient.fi_lab ?? {};
 
   const inpatient = patient.inpatient_visits ?? [];
   const ed = patient.ed_visits ?? [];
-  const dx = patient.dx_annotations ?? [];
   const deathDate = patient.death?.date ?? null;
 
-  // ================= X-AXIS RANGE (CORRECT) =================
+  // ✅ DX: ONLY real diagnosis annotations with a date
+  const dx = Array.isArray(patient.dx_annotations)
+    ? patient.dx_annotations.filter(d => d?.date)
+    : [];
+
+  const hasDX = dx.length > 0;
+
+  // ================= X-AXIS RANGE =================
   const MIN_START_DATE = new Date("2020-01-01");
 
   const allDates = [
-    ...(fi?.dates ?? []),
+    ...(fi.dates ?? []),
     ...inpatient.flatMap(v => [v.start, v.end]),
     ...ed.flatMap(v => [v.start, v.end]),
+    ...(hasDX ? dx.map(d => d.date) : []),
     ...(deathDate ? [deathDate] : [])
   ].filter(Boolean);
 
@@ -57,7 +64,7 @@ function PatientPlot({ patient }) {
     actualMinDate < MIN_START_DATE ? actualMinDate : MIN_START_DATE;
 
   const xAxisEnd = actualMaxDate;
-  // ==========================================================
+  // =================================================
 
   return (
     <div
@@ -96,10 +103,10 @@ function PatientPlot({ patient }) {
                 "# of Unique tests: %{text}<extra></extra>"
             },
 
-            // ---------- DX MARKERS ----------
-            {
-              x: inpatient.map(v => v.start),
-              y: inpatient.map(() => 0.005),
+            // ---------- DX MARKERS (ONLY IF DX EXISTS) ----------
+            hasDX && {
+              x: dx.map(d => d.date),
+              y: dx.map(() => 0.005),
               mode: "markers",
               name: "Diagnosis (MRDx)",
               marker: {
@@ -161,13 +168,11 @@ function PatientPlot({ patient }) {
               },
               hoverinfo: "skip"
             }
-          ]}
+          ].filter(Boolean)}
           layout={{
             autosize: true,
             title: `FI-Lab Timeline — HCN ${patient.hcn}`,
             hovermode: "x unified",
-            hoverdistance: 2,
-            spikedistance: 2,
 
             yaxis: {
               title: "Frailty Index",
@@ -181,7 +186,10 @@ function PatientPlot({ patient }) {
               range: [
                 xAxisStart.toISOString().slice(0, 10),
                 xAxisEnd.toISOString().slice(0, 10)
-              ]
+              ],
+              showticklabels: hasDX,
+              ticks: hasDX ? "outside" : "",
+              showgrid: hasDX
             },
 
             shapes: [
