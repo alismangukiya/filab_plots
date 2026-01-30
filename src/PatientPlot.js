@@ -204,7 +204,7 @@ function PatientPlot({ patient }) {
                 y1: 1,
                 fillcolor: "rgba(255, 166, 0, 0.15)",
                 line: {
-                  width: 2,
+                  width: 0,
                   dash: "dot",
                   color: "rgba(0,0,0,0.4)"
                 }

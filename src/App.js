@@ -3,9 +3,45 @@ import patients from "./data/fi_lab_all_patients.json";
 import PatientPlot from "./PatientPlot";
 import "./App.css";
 
+const PASSWORD = "pinkcow";
+
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [selectedPatient, setSelectedPatient] = useState(patients[0]);
 
+  const handleLogin = () => {
+    if (password === PASSWORD) {
+      setIsAuthenticated(true);
+      setError("");
+    } else {
+      setError("❌ Incorrect password");
+    }
+  };
+
+  // 🔒 PASSWORD SCREEN
+  if (!isAuthenticated) {
+    return (
+      <div className="login-container">
+        <h2>🔒 Enter password 🔒 </h2>
+
+        <input
+          type="password"
+          placeholder="Enter password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+        />
+
+        <button onClick={handleLogin}>Unlock</button>
+
+        {error && <div className="error">{error}</div>}
+      </div>
+    );
+  }
+
+  // ✅ MAIN APP
   return (
     <div className="app">
       {/* LEFT SIDEBAR */}
@@ -16,8 +52,9 @@ function App() {
           {patients.map((p) => (
             <div
               key={p.hcn}
-              className={`patient-item ${selectedPatient?.hcn === p.hcn ? "active" : ""
-                }`}
+              className={`patient-item ${
+                selectedPatient?.hcn === p.hcn ? "active" : ""
+              }`}
               onClick={() => setSelectedPatient(p)}
             >
               <div className="patient-hcn">HCN {p.hcn}</div>
@@ -40,7 +77,6 @@ function App() {
           <div className="empty">Select a patient</div>
         )}
       </main>
-
     </div>
   );
 }
