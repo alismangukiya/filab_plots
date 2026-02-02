@@ -64,7 +64,25 @@ function PatientPlot({ patient }) {
     actualMinDate < MIN_START_DATE ? actualMinDate : MIN_START_DATE;
 
   const xAxisEnd = actualMaxDate;
+  
   // =================================================
+
+  const MIN_TESTS = 10;
+  const MAX_TESTS = 25;
+  const MIN_OPACITY = 0.05;  // light
+  const MAX_OPACITY = 1.0;  // dark
+
+  const acuteOpacity = (fi.num_of_tests ?? []).map(n => {
+    if (n == null) return MIN_OPACITY;
+
+    const clamped = Math.min(Math.max(n, MIN_TESTS), MAX_TESTS);
+    return (
+      MIN_OPACITY +
+      ((clamped - MIN_TESTS) / (MAX_TESTS - MIN_TESTS)) *
+      (MAX_OPACITY - MIN_OPACITY)
+    );
+  });
+
 
   return (
     <div
@@ -81,7 +99,7 @@ function PatientPlot({ patient }) {
               y: fi.acute,
               mode: "markers",
               name: "FI Lab Acute",
-              marker: { size: 5 },
+              marker: { size: 6, opacity: acuteOpacity },
               text: fi.num_of_tests,
               hovertemplate:
                 "FI Acute: %{y:.3f}<br>" +
@@ -173,6 +191,7 @@ function PatientPlot({ patient }) {
             autosize: true,
             title: `FI-Lab Timeline — HCN ${patient.hcn}`,
             hovermode: "x unified",
+            hoverdistance: 5,
 
             yaxis: {
               title: "Frailty Index",
@@ -250,7 +269,7 @@ function PatientPlot({ patient }) {
                 line: {
                   color: "red",
                   dash: "dash",
-                  width: 3
+                  width: 4
                 }
               }
             ].filter(Boolean),
