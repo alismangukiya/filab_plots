@@ -3245,7 +3245,7 @@
     "last_discharge": {
       "date": "2024-01-29T00:00:00",
       "disposition": "Died in facility",
-      "death_from_dad": false
+      "death_from_dad": true
     },
     "death": {
       "date": "2024-01-29T00:00:00"
@@ -5912,7 +5912,7 @@
     "last_discharge": {
       "date": "2022-11-30T00:00:00",
       "disposition": "Died in facility",
-      "death_from_dad": false
+      "death_from_dad": true
     },
     "death": {
       "date": "2022-11-30T00:00:00"
@@ -10210,9 +10210,11 @@
     "last_discharge": {
       "date": "2025-06-27T00:00:00",
       "disposition": "Died in facility",
-      "death_from_dad": false
+      "death_from_dad": true
     },
-    "death": null,
+    "death": {
+      "date": "2025-06-27T00:00:00"
+    },
     "dx_annotations": [
       {
         "date": "2019-09-05",
@@ -22524,9 +22526,11 @@
     "last_discharge": {
       "date": "2024-11-14T00:00:00",
       "disposition": "Died in facility",
-      "death_from_dad": false
+      "death_from_dad": true
     },
-    "death": null,
+    "death": {
+      "date": "2024-11-14T00:00:00"
+    },
     "dx_annotations": [
       {
         "date": "2024-03-02",
@@ -26262,9 +26266,11 @@
     "last_discharge": {
       "date": "2024-10-09T00:00:00",
       "disposition": "Died in facility",
-      "death_from_dad": false
+      "death_from_dad": true
     },
-    "death": null,
+    "death": {
+      "date": "2024-10-09T00:00:00"
+    },
     "dx_annotations": [
       {
         "date": "2024-03-14",
@@ -31839,7 +31845,7 @@
     "last_discharge": {
       "date": "2024-01-14T00:00:00",
       "disposition": "Died in facility",
-      "death_from_dad": false
+      "death_from_dad": true
     },
     "death": {
       "date": "2024-01-14T00:00:00"
@@ -33583,9 +33589,11 @@
     "last_discharge": {
       "date": "2024-10-14T00:00:00",
       "disposition": "Died in facility",
-      "death_from_dad": false
+      "death_from_dad": true
     },
-    "death": null,
+    "death": {
+      "date": "2024-10-14T00:00:00"
+    },
     "dx_annotations": [
       {
         "date": "2021-11-01",
@@ -38726,9 +38734,11 @@
     "last_discharge": {
       "date": "2024-10-14T00:00:00",
       "disposition": "Died in facility",
-      "death_from_dad": false
+      "death_from_dad": true
     },
-    "death": null,
+    "death": {
+      "date": "2024-10-14T00:00:00"
+    },
     "dx_annotations": [
       {
         "date": "2022-09-13",
@@ -45287,7 +45297,7 @@
     "last_discharge": {
       "date": "2022-11-16T00:00:00",
       "disposition": "Died in facility",
-      "death_from_dad": false
+      "death_from_dad": true
     },
     "death": {
       "date": "2022-11-16T00:00:00"
@@ -51695,7 +51705,7 @@
     "last_discharge": {
       "date": "2023-08-07T00:00:00",
       "disposition": "Died in facility",
-      "death_from_dad": false
+      "death_from_dad": true
     },
     "death": {
       "date": "2023-08-07T00:00:00"
@@ -53296,7 +53306,7 @@
     "last_discharge": {
       "date": "2024-02-19T00:00:00",
       "disposition": "Died in facility",
-      "death_from_dad": false
+      "death_from_dad": true
     },
     "death": {
       "date": "2024-02-19T00:00:00"
