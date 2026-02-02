@@ -99,7 +99,7 @@ function PatientPlot({ patient }) {
               y: fi.acute,
               mode: "markers",
               name: "FI Lab Acute",
-              marker: { size: 6, opacity: acuteOpacity },
+              marker: { size: 4.5, opacity: acuteOpacity },
               text: fi.num_of_tests,
               hovertemplate:
                 "FI Acute: %{y:.3f}<br>" +
