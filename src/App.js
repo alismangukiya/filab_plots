@@ -3,7 +3,7 @@ import patients from "./data/fi_lab_all_patients.json";
 import PatientPlot from "./PatientPlot";
 import "./App.css";
 
-const PASSWORD = "pinkcow";
+const PASSWORD = "redcow";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
